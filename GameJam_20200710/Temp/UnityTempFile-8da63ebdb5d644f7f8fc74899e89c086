@@ -297,7 +297,6 @@
 /define:ENABLE_UNITY_COLLECTIONS_CHECKS
 /define:ENABLE_BURST_AOT
 /define:UNITY_TEAM_LICENSE
-/define:ENABLE_VSTU
 /define:ENABLE_CUSTOM_RENDER_TEXTURE
 /define:ENABLE_DIRECTOR
 /define:ENABLE_LOCALIZATION
@@ -308,4 +307,7 @@
 /define:ENABLE_LEGACY_INPUT_MANAGER
 /define:CSHARP_7_OR_LATER
 /define:CSHARP_7_3_OR_NEWER
-"Assets/GameManager.cs"
+"Assets/Scripts/Action.cs"
+"Assets/Scripts/GameManager.cs"
+"Assets/Scripts/PlayerController.cs"
+"Assets/Scripts/UIController.cs"
