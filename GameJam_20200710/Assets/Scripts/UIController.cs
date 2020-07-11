@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class UIController : MonoBehaviour
 {
     public Button startButton;
     public Button[] skillButtons;
-    public GameObject selectedButtonPrefabs;
-    public Button[] selectedButtons;
+    public Button[] selectedButtonPrefabs;
+    private Button[] selectedButtons;
     public GameObject selectedPanel;
     /// <summary>
     /// 不同SelectedButton数量时，每个按钮的位置
@@ -38,7 +39,11 @@ public class UIController : MonoBehaviour
     private void Awake()
     {
         _intance = this;
-        List<Vector2> temp1 = new List<Vector2> { new Vector2(0, 0) };
+        positionOfSelectedButton[0] = new List<Vector2> { new Vector2(410, 152) };
+        positionOfSelectedButton[1] = new List<Vector2> { new Vector2(410, 192), new Vector2(410, 112) };
+        positionOfSelectedButton[2] = new List<Vector2> { new Vector2(336, 191), new Vector2(490, 191), new Vector2(410, 110) };
+
+
         //todo
     }
     private void Start()
@@ -46,8 +51,10 @@ public class UIController : MonoBehaviour
         ResetUI();
     }
 
+
     public void ResetUI()
     {
+        InstantiateSelectButtons();
         selectButtonPoint = 0;
         isSelectButtonEmpty = new bool[selectedButtons.Length];
         for (int i = 0; i < isSelectButtonEmpty.Length; i++)
@@ -66,17 +73,51 @@ public class UIController : MonoBehaviour
         {
             skillButtons[i].image.sprite = GameManager.gameManager.skillSprites[(int)temp[i]];
         }
+        for (int i = len; i < 4; i++)
+        {
+            skillButtons[i].enabled = false;
+        }
         // SelectButton初始化不可以点
         for (int i = 0; i < selectedButtons.Length; i++)
         {
             selectedButtons[i].enabled = false;
         }
+    } 
+    private void InstantiateSelectButtons()
+    {
+        int len = GameManager.gameManager.GetSelectNum();
+        selectedButtons = new Button[len];
+        for (int i = 0; i < len; i++)
+        {
+            Debug.Log("i1:" + i);
+            selectedButtons[i] = Instantiate(selectedButtonPrefabs[i], positionOfSelectedButton[len - 1][i], Quaternion.identity, selectedPanel.transform);
+        }
+        if (selectedButtons.Length>0)
+        {
+            selectedButtons[0].onClick.AddListener(delegate ()
+            {
+                Unselect(0);
+            });
+        }
+        if (selectedButtons.Length > 1)
+        {
+            selectedButtons[1].onClick.AddListener(delegate ()
+            {
+                Unselect(1);
+            });
+        }
+        if (selectedButtons.Length > 2)
+        {
+            selectedButtons[2].onClick.AddListener(delegate ()
+            {
+                Unselect(2);
+            });
+        }
     }
     public void Select(int num)
     {
         selectedButtons[selectButtonPoint].image.sprite = skillButtons[num].image.sprite;
-        Debug.Log(selectButtonPoint);
-        enableSkills[selectButtonPoint] = GameManager.gameManager.skillForEachLevel[GameManager.gameManager.level][num];
+        enableSkills[selectButtonPoint] = GameManager.gameManager.skillForEachLevel[GameManager.gameManager.GetLevel()][num];
         matchedSkillButtons[selectButtonPoint] = num;
         isSelectButtonEmpty[selectButtonPoint] = false;
         selectedButtons[selectButtonPoint].enabled = true;
@@ -85,6 +126,8 @@ public class UIController : MonoBehaviour
     }
     public void Unselect(int num)
     {
+        Debug.Log(num);
+        Debug.Log(selectedButtons.Length);
         selectedButtons[num].image.sprite = null;
         isSelectButtonEmpty[num] = true;
         NextPoint();
@@ -104,7 +147,9 @@ public class UIController : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < skillButtons.Length; i++)
+            List<GameManager.Skill> temp = GameManager.gameManager.GetSkillsForThisLevel();
+            int len = temp.Count;
+            for (int i = 0; i < len; i++)
             {
                 skillButtons[i].enabled = true;
             }
@@ -148,5 +193,14 @@ public class UIController : MonoBehaviour
         selectButtonPoint = isSelectButtonEmpty.Length;
     }
 
+    public void Restart()
+    {
+        GameManager.gameManager.LoadScence(GameManager.gameManager.GetLevel());
+
+    }
+    public void Next()
+    {
+        GameManager.gameManager.NextLevel();
+    }
 }
 
