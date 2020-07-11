@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     /// <summary>
-    /// 实例化
+    /// 单例模式
     /// </summary>
     private static GameManager _intance;
     public static GameManager gameManager
@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
             return _intance;
         }
     }
-
+    public bool IsRunning;
     /// <summary>
     /// 关卡总数
     /// </summary>
@@ -25,14 +25,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public int level;
     /// <summary>
+    /// 主角
+    /// </summary>
+    private GameObject player;
+    /// <summary>
     /// 技能（总）
     /// </summary>
     public enum Skill
     {
-        Walk,
+        WalkRight,
+        WalkLeft,
         Jump,
-        Push,
-        Pull
+        Crouch
     }
     /// <summary>
     /// 每一关对应可使用技能
@@ -64,17 +68,17 @@ public class GameManager : MonoBehaviour
     {
         _intance = this;
         selectNums[0] = 2;
-        List<Skill> level1 = new List<Skill> { Skill.Walk, Skill.Jump, Skill.Push, Skill.Pull };
+        List<Skill> level1 = new List<Skill> { Skill.WalkRight, Skill.WalkLeft, Skill.Jump, Skill.Crouch };
         skillForEachLevel[0] = level1;
+        IsRunning = false;
     }
-    // Start is called before the first frame update
-    void Start()
+    public void StartTheGame()
     {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        IsRunning = true;
+        player.GetComponent<PlayerController>().stageActs.Clear();
+        for (int i = 0; i < UIController.uIController.enableSkills.Length; i++)
+        {
+            player.GetComponent<PlayerController>().stageActs.Add(UIController.uIController.enableSkills[i].ToString());
+        }
     }
 }

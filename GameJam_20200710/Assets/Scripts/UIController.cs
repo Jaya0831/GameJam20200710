@@ -17,16 +17,27 @@ public class UIController : MonoBehaviour
     /// <summary>
     /// 存储目前可以使用的技能
     /// </summary>
-    private GameManager.Skill[] enableSkills;
+    public GameManager.Skill[] enableSkills;
     private int[] matchedSkillButtons;
     /// <summary>
     /// 指向将要被决定的selectButton位置
     /// </summary>
     private int selectButtonPoint;
     private bool[] isSelectButtonEmpty;
-
+    /// <summary>
+    /// 单例模式
+    /// </summary>
+    private static UIController _intance;
+    public static UIController uIController
+    {
+        get
+        {
+            return _intance;
+        }
+    }
     private void Awake()
     {
+        _intance = this;
         List<Vector2> temp1 = new List<Vector2> { new Vector2(0, 0) };
         //todo
     }
@@ -71,8 +82,6 @@ public class UIController : MonoBehaviour
         selectedButtons[selectButtonPoint].enabled = true;
         NextPoint();
         skillButtons[num].enabled = false;
-        
-        //todo：传递给playercontroller
     }
     public void Unselect(int num)
     {
@@ -124,6 +133,7 @@ public class UIController : MonoBehaviour
             selectedButtons[i].enabled = false;
         }
         startButton.enabled = false;
+        GameManager.gameManager.StartTheGame();
     }
     private void NextPoint()
     {
@@ -137,5 +147,6 @@ public class UIController : MonoBehaviour
         }
         selectButtonPoint = isSelectButtonEmpty.Length;
     }
+
 }
 

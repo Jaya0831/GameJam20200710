@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     Type t = typeof(Actions);
-
-
+    //Hack:宁再改位置
+    public List<string> stageActs = new List<string>();
     // Start is called before the first frame update
     void Start()
     {
